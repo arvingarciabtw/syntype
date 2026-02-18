@@ -1,10 +1,15 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
+import ThemeToggle from "@/components/general/theme-toggle";
 import { Menu } from "react-feather";
 import { BREAKPOINTS } from "@/lib/constants";
+import { cookies } from "next/headers";
 
 async function Header() {
+  const savedTheme = (await cookies()).get("color-theme");
+  const theme = savedTheme?.value || "light";
+
   return (
     <Wrapper className="wrapper-primary">
       <Navigation>
@@ -33,6 +38,7 @@ async function Header() {
           </NavigationList>
           <Buttons>
             <NavigationItem>
+              <ThemeToggle initialTheme={theme} />
             </NavigationItem>
             <NavigationItem>
               <Hamburger>

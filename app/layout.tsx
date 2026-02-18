@@ -1,12 +1,15 @@
 import "@/styles/globals.css";
 import Header from "@/components/general/header";
 import Footer from "@/components/general/footer";
+import StyledComponentsRegistry from "@/lib/registry";
 import type { Metadata } from "next";
 import {
   Atkinson_Hyperlegible_Next,
   JetBrains_Mono,
   Fira_Sans,
 } from "next/font/google";
+import { cookies } from "next/headers";
+import { LIGHT_COLORS, DARK_COLORS } from "@/lib/constants";
 
 const atkinson = Atkinson_Hyperlegible_Next({
   variable: "--font-atkinson",
@@ -49,14 +52,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const savedTheme = (await cookies()).get("color-theme");
+  const theme = savedTheme?.value || "light";
+
+  const themeColors = (
+    theme === "light" ? LIGHT_COLORS : DARK_COLORS
+  ) as React.CSSProperties;
+
   return (
     <html lang="en" data-color-theme={theme} style={themeColors}>
       <body
         className={`${atkinson.variable} ${jetBrainsMono.variable} ${fira.variable}`}
       >
+        <StyledComponentsRegistry>
           <Header />
           <main className="wrapper-primary">{children}</main>
           <Footer />
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
