@@ -8,8 +8,7 @@ import {
   JetBrains_Mono,
   Fira_Sans,
 } from "next/font/google";
-import { cookies } from "next/headers";
-import { LIGHT_COLORS, DARK_COLORS } from "@/lib/constants";
+import { getTheme, getThemeColors } from "@/lib/helpers/theme";
 
 const atkinson = Atkinson_Hyperlegible_Next({
   variable: "--font-atkinson",
@@ -52,12 +51,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const savedTheme = (await cookies()).get("color-theme");
-  const theme = savedTheme?.value || "light";
-
-  const themeColors = (
-    theme === "light" ? LIGHT_COLORS : DARK_COLORS
-  ) as React.CSSProperties;
+  const theme = await getTheme();
+  const themeColors = await getThemeColors();
 
   return (
     <html lang="en" data-color-theme={theme} style={themeColors}>
