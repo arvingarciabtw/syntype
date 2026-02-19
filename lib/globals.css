@@ -151,10 +151,11 @@ body {
 }
 .wrapper-primary {
   margin: auto;
-  max-width: var(--breakpoint-desktop);
+  max-width: var(--breakpoint-laptop);
   width: 100%;
 }
 main {
+  padding: var(--space-lg);
   display: grid;
   place-items: center;
   flex: 1;

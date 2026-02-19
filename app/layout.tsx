@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "@/lib/globals.css";
 import Header from "@/components/general/header";
 import Footer from "@/components/general/footer";
 import StyledComponentsRegistry from "@/lib/registry";
