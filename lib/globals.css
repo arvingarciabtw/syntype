@@ -138,6 +138,25 @@ html {
 }
 
 /*
+  --- MISCELLANEOUS ---
+*/
+
+/* Scrollbar */
+html {
+  scrollbar-color: var(--color-gray-700) var(--color-bg);
+  scrollbar-width: thin;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-fg);
+}
+html[data-color-theme="dark"] ::selection {
+  color: var(--color-bg);
+}
+
+/*
   --- GENERAL STRUCTURE ---
 */
 
