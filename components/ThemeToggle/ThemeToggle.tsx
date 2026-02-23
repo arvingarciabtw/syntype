@@ -4,7 +4,7 @@ import React from "react";
 import Cookie from "js-cookie";
 import { Sun, Moon } from "react-feather";
 import { LIGHT_COLORS, DARK_COLORS } from "@/lib/constants";
-import ThemeToggleWrapper from "./theme-toggle.style";
+import ThemeToggleWrapper from "@/components/ThemeToggle/ThemeToggle.style";
 
 function ThemeToggle({ initialTheme }: { initialTheme: string }) {
   const [theme, setTheme] = React.useState(initialTheme);

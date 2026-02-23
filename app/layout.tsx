@@ -1,6 +1,6 @@
 import "@/lib/globals.css";
-import Header from "@/components/general/header";
-import Footer from "@/components/general/footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import StyledComponentsRegistry from "@/lib/registry";
 import type { Metadata } from "next";
 import {

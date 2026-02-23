@@ -1,5 +1,5 @@
 import React from "react";
-import VisuallyHiddenWrapper from "../visually-hidden/visually-hidden.style";
+import VisuallyHiddenWrapper from "@/components/VisuallyHidden/VisuallyHidden.style";
 
 const VisuallyHidden = ({
   children,

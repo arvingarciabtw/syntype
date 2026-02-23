@@ -1,4 +1,4 @@
-import { Wrapper, Author } from "../footer/footer.style";
+import { Wrapper, Author } from "@/components/Footer/Footer.style";
 
 function Footer() {
   return (

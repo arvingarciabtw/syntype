@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import ThemeToggle from "@/components/general/theme-toggle";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Menu } from "react-feather";
 import { getTheme } from "@/lib/helpers/theme";
 import {
@@ -13,7 +13,7 @@ import {
   NavigationItem,
   Buttons,
   Hamburger,
-} from "../header/header.style";
+} from "@/components/Header/Header.style";
 
 async function Header() {
   const theme = await getTheme();
