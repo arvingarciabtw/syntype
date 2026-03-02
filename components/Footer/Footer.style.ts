@@ -7,7 +7,7 @@ const Wrapper = styled.footer`
 `;
 
 const Author = styled.a`
-  color: var(--color-gray-300);
+  color: var(--color-fg);
 
   &:hover {
     text-decoration: none;
