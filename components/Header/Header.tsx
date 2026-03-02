@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
-import { Menu } from "react-feather";
+import Menu from "@/components/Menu";
 import { getTheme } from "@/lib/helpers/theme";
 import {
   HeaderWrapper,
@@ -12,7 +12,6 @@ import {
   NavigationList,
   NavigationItem,
   Buttons,
-  Hamburger,
 } from "@/components/Header/Header.style";
 
 async function Header() {
@@ -50,9 +49,7 @@ async function Header() {
               <ThemeToggle initialTheme={theme} />
             </NavigationItem>
             <NavigationItem>
-              <Hamburger>
-                <Menu />
-              </Hamburger>
+              <Menu />
             </NavigationItem>
           </Buttons>
         </RightSide>
