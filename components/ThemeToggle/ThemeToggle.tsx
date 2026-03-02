@@ -2,9 +2,9 @@
 
 import React from "react";
 import Cookie from "js-cookie";
+import Button from "@/components/Button";
 import { Sun, Moon } from "react-feather";
 import { LIGHT_COLORS, DARK_COLORS } from "@/lib/constants";
-import ThemeToggleWrapper from "@/components/ThemeToggle/ThemeToggle.style";
 
 function ThemeToggle({ initialTheme }: { initialTheme: string }) {
   const [theme, setTheme] = React.useState(initialTheme);
@@ -29,13 +29,14 @@ function ThemeToggle({ initialTheme }: { initialTheme: string }) {
   }
 
   return (
-    <ThemeToggleWrapper
+    <Button
+      variant="icon"
       className=""
       onClick={handleClick}
       aria-label="Toggle dark / light mode"
     >
-      {theme === "light" ? <Sun size="1.5rem" /> : <Moon size="1.5rem" />}
-    </ThemeToggleWrapper>
+      {theme === "light" ? <Sun size="1.25rem" /> : <Moon size="1.25rem" />}
+    </Button>
   );
 }
 
