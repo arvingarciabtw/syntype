@@ -144,7 +144,6 @@ html {
 /* Scrollbar */
 html {
   scrollbar-color: var(--color-gray-700) var(--color-bg);
-  scrollbar-width: thin;
 }
 
 /* Selection */
