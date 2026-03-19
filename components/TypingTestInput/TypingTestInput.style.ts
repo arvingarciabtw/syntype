@@ -25,6 +25,7 @@ const Wrapper = styled.div`
   --color-incorrect-bg: rgba(248, 113, 113, 0.2);
   --line-h: 32px;
   padding: 0;
+  width: 100%;
   position: relative;
   background: var(--color-gray-900);
   border: 1px solid var(--color-gray-850);
