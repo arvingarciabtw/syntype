@@ -1,8 +1,15 @@
-import { expect, test, beforeEach } from "vitest";
+import { expect, test, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import TypingTestSettings from "@/components/TypingTestSettings";
 
-beforeEach(cleanup);
+beforeEach(() => {
+  cleanup();
+  localStorage.clear();
+});
+
+afterEach(() => {
+  localStorage.clear();
+});
 
 test("renders all sections", () => {
   render(<TypingTestSettings />);
@@ -11,6 +18,7 @@ test("renders all sections", () => {
   expect(screen.getByRole("group", { name: "Length" })).toBeDefined();
   expect(screen.getByRole("combobox", { name: "Language" })).toBeDefined();
   expect(screen.getByRole("textbox", { name: "AI Prompt" })).toBeDefined();
+  expect(screen.getByRole("combobox", { name: "Keyboard Layout" })).toBeDefined();
 });
 
 test("time options render correctly", () => {

@@ -8,92 +8,14 @@ import {
   Key,
   ShiftDisplay,
 } from "@/components/Keyboard/Keyboard.style";
+import { KEYBOARD_LAYOUTS } from "@/components/Keyboard/Keyboard.constants";
 
-type Finger = 0 | 1 | 2 | 3 | 4;
-
-interface KeyData {
-  display: string;
-  displayShift?: string;
-  value: string;
-  finger: Finger;
-  width?: "wide" | "extra-wide" | "spacebar";
-  grow?: boolean;
-}
-
-const KEYBOARD_LAYOUT: KeyData[][] = [
-  [
-    { display: "`", displayShift: "~", value: "`", finger: 0 },
-    { display: "1", displayShift: "!", value: "1", finger: 0 },
-    { display: "2", displayShift: "@", value: "2", finger: 1 },
-    { display: "3", displayShift: "#", value: "3", finger: 2 },
-    { display: "4", displayShift: "$", value: "4", finger: 3 },
-    { display: "5", displayShift: "%", value: "5", finger: 3 },
-    { display: "6", displayShift: "^", value: "6", finger: 3 },
-    { display: "7", displayShift: "&", value: "7", finger: 3 },
-    { display: "8", displayShift: "*", value: "8", finger: 2 },
-    { display: "9", displayShift: "(", value: "9", finger: 1 },
-    { display: "0", displayShift: ")", value: "0", finger: 0 },
-    { display: "-", displayShift: "_", value: "-", finger: 0 },
-    { display: "=", displayShift: "+", value: "=", finger: 0 },
-    { display: "Backspace", value: "backspace", finger: 0, width: "extra-wide" },
-  ],
-  [
-    { display: "Tab", value: "tab", finger: 0, width: "wide" },
-    { display: "Q", value: "q", finger: 0 },
-    { display: "W", value: "w", finger: 1 },
-    { display: "E", value: "e", finger: 2 },
-    { display: "R", value: "r", finger: 3 },
-    { display: "T", value: "t", finger: 3 },
-    { display: "Y", value: "y", finger: 3 },
-    { display: "U", value: "u", finger: 3 },
-    { display: "I", value: "i", finger: 2 },
-    { display: "O", value: "o", finger: 1 },
-    { display: "P", value: "p", finger: 0 },
-    { display: "[", displayShift: "{", value: "[", finger: 0 },
-    { display: "]", displayShift: "}", value: "]", finger: 0 },
-    { display: "\\", displayShift: "|", value: "\\", finger: 0, width: "wide" },
-  ],
-  [
-    { display: "Caps", value: "capslock", finger: 0, width: "wide" },
-    { display: "A", value: "a", finger: 0 },
-    { display: "S", value: "s", finger: 1 },
-    { display: "D", value: "d", finger: 2 },
-    { display: "F", value: "f", finger: 3 },
-    { display: "G", value: "g", finger: 3 },
-    { display: "H", value: "h", finger: 3 },
-    { display: "J", value: "j", finger: 3 },
-    { display: "K", value: "k", finger: 2 },
-    { display: "L", value: "l", finger: 1 },
-    { display: ";", displayShift: ":", value: ";", finger: 0 },
-    { display: "'", displayShift: '"', value: "'", finger: 0 },
-    { display: "Enter", value: "enter", finger: 0, width: "extra-wide" },
-  ],
-  [
-    { display: "Shift", value: "shift", finger: 0, width: "wide" },
-    { display: "Z", value: "z", finger: 0 },
-    { display: "X", value: "x", finger: 1 },
-    { display: "C", value: "c", finger: 2 },
-    { display: "V", value: "v", finger: 3 },
-    { display: "B", value: "b", finger: 3 },
-    { display: "N", value: "n", finger: 3 },
-    { display: "M", value: "m", finger: 3 },
-    { display: ",", displayShift: "<", value: ",", finger: 2 },
-    { display: ".", displayShift: ">", value: ".", finger: 1 },
-    { display: "/", displayShift: "?", value: "/", finger: 0 },
-    { display: "Shift", value: "shift", finger: 0, width: "extra-wide" },
-  ],
-  [
-    { display: "Ctrl", value: "control", finger: 0, grow: true },
-    { display: "Alt", value: "alt", finger: 0, grow: true },
-    { display: "Space", value: " ", finger: 4, width: "spacebar" },
-    { display: "Alt", value: "alt", finger: 0, grow: true },
-    { display: "Ctrl", value: "control", finger: 0, grow: true },
-  ],
-];
+export type KeyboardLayout = "qwerty" | "dvorak" | "colemak";
 
 interface KeyboardProps {
   pressedKey: string | null;
   keyCount: number;
+  layout?: KeyboardLayout;
 }
 
 function normalizeKey(key: string): string {
@@ -133,8 +55,13 @@ function normalizeKey(key: string): string {
   return key.toLowerCase();
 }
 
-export default function Keyboard({ pressedKey, keyCount }: KeyboardProps) {
+export default function Keyboard({
+  pressedKey,
+  keyCount,
+  layout = "qwerty",
+}: KeyboardProps) {
   const [activeKey, setActiveKey] = useState<string | null>(null);
+  const keyboardLayout = KEYBOARD_LAYOUTS[layout] || KEYBOARD_LAYOUTS.qwerty;
 
   useEffect(() => {
     if (!pressedKey) return;
@@ -158,7 +85,7 @@ export default function Keyboard({ pressedKey, keyCount }: KeyboardProps) {
   return (
     <Wrapper>
       <KeyboardContainer>
-        {KEYBOARD_LAYOUT.map((row, rowIndex) => (
+        {keyboardLayout.map((row, rowIndex) => (
           <Row key={rowIndex}>
             {row.map((key, keyIndex) => (
               <Key
