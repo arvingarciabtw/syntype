@@ -69,8 +69,7 @@ export const Key = styled.button<{
   ${({ $pressed }) =>
     $pressed &&
     `
-    background-color: var(--color-primary) !important;
-    color: var(--color-bg);
+    background-color: var(--color-primary);
     transform: scale(0.95);
   `}
 
