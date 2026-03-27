@@ -11,6 +11,8 @@ export interface KeyData {
   grow?: boolean;
 }
 
+export const STORAGE_KEY = "syntype-keyboard-layout";
+
 export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
   qwerty: [
     [
@@ -27,7 +29,12 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
       { display: "0", displayShift: ")", value: "0", finger: 0 },
       { display: "-", displayShift: "_", value: "-", finger: 0 },
       { display: "=", displayShift: "+", value: "=", finger: 0 },
-      { display: "Backspace", value: "backspace", finger: 0, width: "extra-wide" },
+      {
+        display: "Backspace",
+        value: "backspace",
+        finger: 0,
+        width: "extra-wide",
+      },
     ],
     [
       { display: "Tab", value: "tab", finger: 0, width: "wide" },
@@ -43,7 +50,13 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
       { display: "P", value: "p", finger: 0 },
       { display: "[", displayShift: "{", value: "[", finger: 0 },
       { display: "]", displayShift: "}", value: "]", finger: 0 },
-      { display: "\\", displayShift: "|", value: "\\", finger: 0, width: "wide" },
+      {
+        display: "\\",
+        displayShift: "|",
+        value: "\\",
+        finger: 0,
+        width: "wide",
+      },
     ],
     [
       { display: "Caps", value: "capslock", finger: 0, width: "wide" },
@@ -97,7 +110,12 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
       { display: "0", displayShift: ")", value: "0", finger: 0 },
       { display: "-", displayShift: "_", value: "-", finger: 0 },
       { display: "=", displayShift: "+", value: "=", finger: 0 },
-      { display: "Backspace", value: "backspace", finger: 0, width: "extra-wide" },
+      {
+        display: "Backspace",
+        value: "backspace",
+        finger: 0,
+        width: "extra-wide",
+      },
     ],
     [
       { display: "Tab", value: "tab", finger: 0, width: "wide" },
@@ -113,7 +131,13 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
       { display: "L", value: "l", finger: 0 },
       { display: "/", displayShift: "?", value: "/", finger: 0 },
       { display: "=", displayShift: "+", value: "=", finger: 0 },
-      { display: "\\", displayShift: "|", value: "\\", finger: 0, width: "wide" },
+      {
+        display: "\\",
+        displayShift: "|",
+        value: "\\",
+        finger: 0,
+        width: "wide",
+      },
     ],
     [
       { display: "Caps", value: "capslock", finger: 0, width: "wide" },
@@ -167,7 +191,12 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
       { display: "0", displayShift: ")", value: "0", finger: 0 },
       { display: "-", displayShift: "_", value: "-", finger: 0 },
       { display: "=", displayShift: "+", value: "=", finger: 0 },
-      { display: "Backspace", value: "backspace", finger: 0, width: "extra-wide" },
+      {
+        display: "Backspace",
+        value: "backspace",
+        finger: 0,
+        width: "extra-wide",
+      },
     ],
     [
       { display: "Tab", value: "tab", finger: 0, width: "wide" },
@@ -183,7 +212,13 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
       { display: ";", displayShift: ":", value: ";", finger: 0 },
       { display: "[", displayShift: "{", value: "[", finger: 0 },
       { display: "]", displayShift: "}", value: "]", finger: 0 },
-      { display: "\\", displayShift: "|", value: "\\", finger: 0, width: "wide" },
+      {
+        display: "\\",
+        displayShift: "|",
+        value: "\\",
+        finger: 0,
+        width: "wide",
+      },
     ],
     [
       { display: "Caps", value: "capslock", finger: 0, width: "wide" },
@@ -223,3 +258,4 @@ export const KEYBOARD_LAYOUTS: Record<string, KeyData[][]> = {
     ],
   ],
 };
+

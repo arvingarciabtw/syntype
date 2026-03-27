@@ -30,39 +30,20 @@ const LANGUAGES = [
 
 const KEYBOARD_LAYOUTS = ["QWERTY", "DVORAK", "COLEMAK"];
 
-const STORAGE_KEY = "syntype-keyboard-layout";
-
-function getStoredLayout(): string {
-  if (typeof window === "undefined") return "QWERTY";
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored && KEYBOARD_LAYOUTS.includes(stored)) {
-    return stored;
-  }
-  return "QWERTY";
-}
-
 function TypingTestSettings({
+  layout = "QWERTY",
   onLayoutChange,
 }: {
+  layout?: string;
   onLayoutChange?: (layout: string) => void;
 }) {
   const [time, setTime] = React.useState<string>("30");
   const [length, setLength] = React.useState<string>("moderate");
   const [language, setLanguage] = React.useState<string>("TypeScript");
   const [aiPrompt, setAiPrompt] = React.useState<string>("");
-  const [keyboardLayout, setKeyboardLayout] = React.useState<string>(getStoredLayout);
-
-  React.useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && KEYBOARD_LAYOUTS.includes(stored)) {
-      setKeyboardLayout(stored);
-    }
-  }, []);
 
   const handleLayoutChange = (value: string | null) => {
     if (!value) return;
-    setKeyboardLayout(value);
-    localStorage.setItem(STORAGE_KEY, value);
     onLayoutChange?.(value);
   };
 
@@ -142,9 +123,9 @@ function TypingTestSettings({
 
       <Section>
         <Label id="layout-label">Keyboard Layout</Label>
-        <Select.Root value={keyboardLayout} onValueChange={handleLayoutChange}>
+        <Select.Root value={layout} onValueChange={handleLayoutChange}>
           <StyledSelectTrigger aria-labelledby="layout-label">
-            {keyboardLayout}
+            {layout}
             <svg
               width="16"
               height="16"
