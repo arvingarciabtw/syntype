@@ -19,6 +19,38 @@ interface KeyboardProps {
 }
 
 function normalizeKey(key: string): string {
+  if (key.startsWith("Key") && key.length === 4) {
+    return key[3].toLowerCase();
+  }
+  if (key.startsWith("Digit") && key.length === 6) {
+    const digit = key[5];
+    const shiftDigits: Record<string, string> = {
+      "1": "!", "2": "@", "3": "#", "4": "$", "5": "%",
+      "6": "^", "7": "&", "8": "*", "9": "(", "0": ")",
+    };
+    return shiftDigits[digit] || digit;
+  }
+
+  const keyMap: Record<string, string> = {
+    "Backspace": "backspace",
+    "Enter": "enter",
+    "Tab": "tab",
+    "Space": " ",
+    "Minus": "-",
+    "Equal": "=",
+    "BracketLeft": "[",
+    "BracketRight": "]",
+    "Backslash": "\\",
+    "Semicolon": ";",
+    "Quote": "'",
+    "Comma": ",",
+    "Period": ".",
+    "Slash": "/",
+    "Backquote": "`",
+  };
+
+  if (keyMap[key]) return keyMap[key];
+
   if (key.length === 1 && key >= "a" && key <= "z") return key;
   if (key.length === 1 && key >= "A" && key <= "Z") return key.toLowerCase();
 
@@ -48,11 +80,12 @@ function normalizeKey(key: string): string {
 
   if (shiftMap[key]) return shiftMap[key];
 
-  if (key === "ArrowUp") return "shift";
-  if (key === "ArrowDown") return "enter";
-  if (key === "ArrowLeft") return "control";
-  if (key === "ArrowRight") return "alt";
-  return key.toLowerCase();
+  if (key === "ArrowUp") return "ShiftLeft";
+  if (key === "ArrowDown") return "Enter";
+  if (key === "ArrowLeft") return "ControlLeft";
+  if (key === "ArrowRight") return "AltRight";
+
+  return key;
 }
 
 export default function Keyboard({

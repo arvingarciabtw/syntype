@@ -139,7 +139,7 @@ export default function TypingTestInput({
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (done) return;
 
-      onKeyPress?.(e.key);
+      onKeyPress?.(e.code);
 
       // prevent browser shortcuts for keys we handle
       if (["Tab", "Enter", "Backspace"].includes(e.key)) e.preventDefault();
