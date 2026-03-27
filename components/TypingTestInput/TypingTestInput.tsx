@@ -48,6 +48,7 @@ interface TypingTestInputProps {
   code: string;
   onComplete?: (stats: TypingStats) => void;
   onProgress?: (stats: TypingStats) => void;
+  onKeyPress?: (key: string) => void;
   visibleLines?: number; /* how many lines to show at once, default: 6 */
 }
 
@@ -106,6 +107,7 @@ export default function TypingTestInput({
   code,
   onComplete,
   onProgress,
+  onKeyPress,
   visibleLines = VISIBLE_LINES_DEFAULT,
 }: TypingTestInputProps) {
   const [lines, setLines] = useState<Line[]>(() => parseCode(code));
@@ -136,6 +138,8 @@ export default function TypingTestInput({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (done) return;
+
+      onKeyPress?.(e.key);
 
       // prevent browser shortcuts for keys we handle
       if (["Tab", "Enter", "Backspace"].includes(e.key)) e.preventDefault();
@@ -249,7 +253,7 @@ export default function TypingTestInput({
         return prevCursor;
       });
     },
-    [done, lines, onComplete, onProgress],
+    [done, lines, onComplete, onProgress, onKeyPress],
   );
 
   /* Scroll offset: keep cursor at CURSOR_ANCHOR_ROW  */
