@@ -40,7 +40,7 @@ export const Key = styled.button<{
 }>`
   min-width: 40px;
   height: 40px;
-  padding: 0 var(--space-xs);
+  padding: 2px var(--space-xs);
   border: none;
   border-radius: var(--radius-xs);
   background-color: ${({ $finger }) => {
@@ -62,9 +62,11 @@ export const Key = styled.button<{
     background-color 100ms ease,
     transform 50ms ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  position: relative;
 
   ${({ $pressed }) =>
     $pressed &&
@@ -94,6 +96,15 @@ export const Key = styled.button<{
     max-width: 340px;
     flex-grow: 4;
   }
+`;
+
+export const ShiftDisplay = styled.span`
+  font-size: var(--font-2xs);
+  color: var(--color-fg);
+  opacity: 0.7;
+  position: absolute;
+  top: 2px;
+  right: 4px;
 `;
 
 export const FingerLabel = styled.span`

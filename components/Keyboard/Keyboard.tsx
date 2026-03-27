@@ -6,12 +6,14 @@ import {
   KeyboardContainer,
   Row,
   Key,
+  ShiftDisplay,
 } from "@/components/Keyboard/Keyboard.style";
 
 type Finger = 0 | 1 | 2 | 3 | 4;
 
 interface KeyData {
   display: string;
+  displayShift?: string;
   value: string;
   finger: Finger;
   width?: "wide" | "extra-wide" | "spacebar";
@@ -20,19 +22,19 @@ interface KeyData {
 
 const KEYBOARD_LAYOUT: KeyData[][] = [
   [
-    { display: "`", value: "`", finger: 0 },
-    { display: "1", value: "1", finger: 0 },
-    { display: "2", value: "2", finger: 1 },
-    { display: "3", value: "3", finger: 2 },
-    { display: "4", value: "4", finger: 3 },
-    { display: "5", value: "5", finger: 3 },
-    { display: "6", value: "6", finger: 3 },
-    { display: "7", value: "7", finger: 3 },
-    { display: "8", value: "8", finger: 2 },
-    { display: "9", value: "9", finger: 1 },
-    { display: "0", value: "0", finger: 0 },
-    { display: "-", value: "-", finger: 0 },
-    { display: "=", value: "=", finger: 0 },
+    { display: "`", displayShift: "~", value: "`", finger: 0 },
+    { display: "1", displayShift: "!", value: "1", finger: 0 },
+    { display: "2", displayShift: "@", value: "2", finger: 1 },
+    { display: "3", displayShift: "#", value: "3", finger: 2 },
+    { display: "4", displayShift: "$", value: "4", finger: 3 },
+    { display: "5", displayShift: "%", value: "5", finger: 3 },
+    { display: "6", displayShift: "^", value: "6", finger: 3 },
+    { display: "7", displayShift: "&", value: "7", finger: 3 },
+    { display: "8", displayShift: "*", value: "8", finger: 2 },
+    { display: "9", displayShift: "(", value: "9", finger: 1 },
+    { display: "0", displayShift: ")", value: "0", finger: 0 },
+    { display: "-", displayShift: "_", value: "-", finger: 0 },
+    { display: "=", displayShift: "+", value: "=", finger: 0 },
     { display: "Backspace", value: "backspace", finger: 0, width: "extra-wide" },
   ],
   [
@@ -47,9 +49,9 @@ const KEYBOARD_LAYOUT: KeyData[][] = [
     { display: "I", value: "i", finger: 2 },
     { display: "O", value: "o", finger: 1 },
     { display: "P", value: "p", finger: 0 },
-    { display: "[", value: "[", finger: 0 },
-    { display: "]", value: "]", finger: 0 },
-    { display: "\\", value: "\\", finger: 0, width: "wide" },
+    { display: "[", displayShift: "{", value: "[", finger: 0 },
+    { display: "]", displayShift: "}", value: "]", finger: 0 },
+    { display: "\\", displayShift: "|", value: "\\", finger: 0, width: "wide" },
   ],
   [
     { display: "Caps", value: "capslock", finger: 0, width: "wide" },
@@ -62,8 +64,8 @@ const KEYBOARD_LAYOUT: KeyData[][] = [
     { display: "J", value: "j", finger: 3 },
     { display: "K", value: "k", finger: 2 },
     { display: "L", value: "l", finger: 1 },
-    { display: ";", value: ";", finger: 0 },
-    { display: "'", value: "'", finger: 0 },
+    { display: ";", displayShift: ":", value: ";", finger: 0 },
+    { display: "'", displayShift: '"', value: "'", finger: 0 },
     { display: "Enter", value: "enter", finger: 0, width: "extra-wide" },
   ],
   [
@@ -75,9 +77,9 @@ const KEYBOARD_LAYOUT: KeyData[][] = [
     { display: "B", value: "b", finger: 3 },
     { display: "N", value: "n", finger: 3 },
     { display: "M", value: "m", finger: 3 },
-    { display: ",", value: ",", finger: 2 },
-    { display: ".", value: ".", finger: 1 },
-    { display: "/", value: "/", finger: 0 },
+    { display: ",", displayShift: "<", value: ",", finger: 2 },
+    { display: ".", displayShift: ">", value: ".", finger: 1 },
+    { display: "/", displayShift: "?", value: "/", finger: 0 },
     { display: "Shift", value: "shift", finger: 0, width: "extra-wide" },
   ],
   [
@@ -97,6 +99,33 @@ interface KeyboardProps {
 function normalizeKey(key: string): string {
   if (key.length === 1 && key >= "a" && key <= "z") return key;
   if (key.length === 1 && key >= "A" && key <= "Z") return key.toLowerCase();
+
+  const shiftMap: Record<string, string> = {
+    "~": "`",
+    "!": "1",
+    "@": "2",
+    "#": "3",
+    "$": "4",
+    "%": "5",
+    "^": "6",
+    "&": "7",
+    "*": "8",
+    "(": "9",
+    ")": "0",
+    "_": "-",
+    "+": "=",
+    "{": "[",
+    "}": "]",
+    "|": "\\",
+    ":": ";",
+    '"': "'",
+    "<": ",",
+    ">": ".",
+    "?": "/",
+  };
+
+  if (shiftMap[key]) return shiftMap[key];
+
   if (key === "ArrowUp") return "shift";
   if (key === "ArrowDown") return "enter";
   if (key === "ArrowLeft") return "control";
@@ -140,6 +169,7 @@ export default function Keyboard({ pressedKey, keyCount }: KeyboardProps) {
                 $grow={key.grow}
                 className={key.width || ""}
               >
+                {key.displayShift && <ShiftDisplay>{key.displayShift}</ShiftDisplay>}
                 {key.display}
               </Key>
             ))}
