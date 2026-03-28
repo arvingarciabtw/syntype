@@ -2,6 +2,13 @@ import { expect, test, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import TypingTestSettings from "@/components/TypingTestSettings";
 
+const DEFAULT_PROPS = {
+  time: "30" as const,
+  length: "moderate" as const,
+  language: "TypeScript",
+  aiPrompt: "",
+};
+
 beforeEach(() => {
   cleanup();
   localStorage.clear();
@@ -12,7 +19,7 @@ afterEach(() => {
 });
 
 test("renders all sections", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   expect(screen.getByRole("group", { name: "Time" })).toBeDefined();
   expect(screen.getByRole("group", { name: "Length" })).toBeDefined();
@@ -22,7 +29,7 @@ test("renders all sections", () => {
 });
 
 test("time options render correctly", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   expect(screen.getByRole("button", { name: "15" })).toBeDefined();
   expect(screen.getByRole("button", { name: "30" })).toBeDefined();
@@ -30,7 +37,7 @@ test("time options render correctly", () => {
 });
 
 test("length options render correctly", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   expect(screen.getByRole("button", { name: "Short" })).toBeDefined();
   expect(screen.getByRole("button", { name: "Moderate" })).toBeDefined();
@@ -38,7 +45,7 @@ test("length options render correctly", () => {
 });
 
 test("default time is 30s", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   const thirtySeconds = screen.getByRole("button", {
     name: "30",
@@ -47,7 +54,7 @@ test("default time is 30s", () => {
 });
 
 test("default length is moderate", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   const moderate = screen.getByRole("button", {
     name: "Moderate",
@@ -56,14 +63,14 @@ test("default length is moderate", () => {
 });
 
 test("default language is TypeScript", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   const select = screen.getByRole("combobox", { name: "Language" });
   expect(select.textContent).toBe("TypeScript");
 });
 
 test("ai prompt textarea is empty by default", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   const textarea = screen.getByRole("textbox", {
     name: "AI Prompt",
@@ -72,7 +79,7 @@ test("ai prompt textarea is empty by default", () => {
 });
 
 test("ai prompt textarea has placeholder text", () => {
-  render(<TypingTestSettings />);
+  render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
   const textarea = screen.getByRole("textbox", { name: "AI Prompt" });
   expect(textarea.getAttribute("placeholder")).toBe(

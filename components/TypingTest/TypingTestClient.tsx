@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Cookie from "js-cookie";
 import TypingTestSettings from "@/components/TypingTestSettings";
 import TypingTestInput from "@/components/TypingTestInput";
 import Keyboard from "@/components/Keyboard";
-import { EXAMPLE_TWO } from "@/components/TypingTestInput/TypingTestInput.constants";
+import { CODE_SNIPPETS, DEFAULT_CODE } from "@/lib/codeSnippets";
 import { STORAGE_KEY } from "@/components/Keyboard/Keyboard.constants";
 import { Wrapper } from "@/components/TypingTest/TypingTestClient.style";
 import type { TypingTestClientProps } from "@/components/TypingTest/TypingTestClient.types";
 import { KeyboardLayout } from "@/components/Keyboard/Keyboard.types";
+import type { Time, Length } from "@/components/TypingTestSettings/TypingTestSettings.types";
 
 export default function TypingTestClient({
   initialLayout,
@@ -17,6 +18,17 @@ export default function TypingTestClient({
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [keyCount, setKeyCount] = useState(0);
   const [layout, setLayout] = useState<KeyboardLayout>(initialLayout);
+  const [time, setTime] = useState<Time>("30");
+  const [length, setLength] = useState<Length>("moderate");
+  const [language, setLanguage] = useState<string>("TypeScript");
+  const [aiPrompt, setAiPrompt] = useState<string>("");
+
+  const code = useMemo(() => {
+    if (aiPrompt.trim()) {
+      return aiPrompt;
+    }
+    return CODE_SNIPPETS[language]?.[length] || DEFAULT_CODE;
+  }, [aiPrompt, language, length]);
 
   const handleKeyPress = useCallback((key: string) => {
     setPressedKey(key);
@@ -45,10 +57,18 @@ export default function TypingTestClient({
   return (
     <Wrapper>
       <TypingTestSettings
+        time={time}
+        length={length}
+        language={language}
+        aiPrompt={aiPrompt}
         layout={layoutDisplay}
+        onTimeChange={setTime}
+        onLengthChange={setLength}
+        onLanguageChange={setLanguage}
+        onAiPromptChange={setAiPrompt}
         onLayoutChange={handleLayoutChange}
       />
-      <TypingTestInput code={EXAMPLE_TWO} onKeyPress={handleKeyPress} />
+      <TypingTestInput code={code} onKeyPress={handleKeyPress} />
       <Keyboard pressedKey={pressedKey} keyCount={keyCount} layout={layout} />
     </Wrapper>
   );

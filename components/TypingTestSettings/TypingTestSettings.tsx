@@ -7,15 +7,15 @@ import {
   Column,
   Section,
   Label,
-  StyledToggleGroup,
-  ToggleButton,
+  ToggleButtonGroup,
+  ToggleOption,
   StyledSelectTrigger,
   StyledSelectPositioner,
   StyledSelectPopup,
   StyledSelectItem,
   StyledTextarea,
 } from "@/components/TypingTestSettings/TypingTestSettings.style";
-import type { TypingTestSettingsProps } from "@/components/TypingTestSettings/TypingTestSettings.types";
+import type { Time, Length, TypingTestSettingsProps } from "@/components/TypingTestSettings/TypingTestSettings.types";
 
 const LANGUAGES = [
   "TypeScript",
@@ -33,14 +33,17 @@ const LANGUAGES = [
 const KEYBOARD_LAYOUTS = ["QWERTY", "DVORAK", "COLEMAK"];
 
 function TypingTestSettings({
+  time,
+  length,
+  language,
+  aiPrompt,
   layout = "QWERTY",
+  onTimeChange,
+  onLengthChange,
+  onLanguageChange,
+  onAiPromptChange,
   onLayoutChange,
 }: TypingTestSettingsProps) {
-  const [time, setTime] = React.useState<string>("30");
-  const [length, setLength] = React.useState<string>("moderate");
-  const [language, setLanguage] = React.useState<string>("TypeScript");
-  const [aiPrompt, setAiPrompt] = React.useState<string>("");
-
   const handleLayoutChange = (value: string | null) => {
     if (!value) return;
     onLayoutChange?.(value);
@@ -51,28 +54,20 @@ function TypingTestSettings({
       <Column>
         <Section>
           <Label id="time-label">Time</Label>
-          <StyledToggleGroup
-            value={[time]}
-            onValueChange={(value) => setTime(value[0] || "30")}
-            aria-labelledby="time-label"
-          >
-            <ToggleButton value="15">15</ToggleButton>
-            <ToggleButton value="30">30</ToggleButton>
-            <ToggleButton value="60">60</ToggleButton>
-          </StyledToggleGroup>
+          <ToggleButtonGroup role="group" aria-labelledby="time-label">
+            <ToggleOption $active={time === "15"} aria-pressed={time === "15"} onClick={() => onTimeChange?.("15" as Time)}>15</ToggleOption>
+            <ToggleOption $active={time === "30"} aria-pressed={time === "30"} onClick={() => onTimeChange?.("30" as Time)}>30</ToggleOption>
+            <ToggleOption $active={time === "60"} aria-pressed={time === "60"} onClick={() => onTimeChange?.("60" as Time)}>60</ToggleOption>
+          </ToggleButtonGroup>
         </Section>
 
         <Section>
           <Label id="length-label">Length</Label>
-          <StyledToggleGroup
-            value={[length]}
-            onValueChange={(value) => setLength(value[0] || "moderate")}
-            aria-labelledby="length-label"
-          >
-            <ToggleButton value="short">Short</ToggleButton>
-            <ToggleButton value="moderate">Moderate</ToggleButton>
-            <ToggleButton value="long">Long</ToggleButton>
-          </StyledToggleGroup>
+          <ToggleButtonGroup role="group" aria-labelledby="length-label">
+            <ToggleOption $active={length === "short"} aria-pressed={length === "short"} onClick={() => onLengthChange?.("short" as Length)}>Short</ToggleOption>
+            <ToggleOption $active={length === "moderate"} aria-pressed={length === "moderate"} onClick={() => onLengthChange?.("moderate" as Length)}>Moderate</ToggleOption>
+            <ToggleOption $active={length === "long"} aria-pressed={length === "long"} onClick={() => onLengthChange?.("long" as Length)}>Long</ToggleOption>
+          </ToggleButtonGroup>
         </Section>
       </Column>
 
@@ -81,7 +76,7 @@ function TypingTestSettings({
           <Label id="language-label">Language</Label>
           <Select.Root
             value={language}
-            onValueChange={(value) => setLanguage(value as string)}
+            onValueChange={(value) => onLanguageChange?.(value as string)}
           >
             <StyledSelectTrigger aria-labelledby="language-label">
               {language}
@@ -152,7 +147,7 @@ function TypingTestSettings({
             id="ai-prompt"
             placeholder="Generate a React useAuth hook with login, logout, and session persistence..."
             value={aiPrompt}
-            onChange={(e) => setAiPrompt(e.target.value)}
+            onChange={(e) => onAiPromptChange?.(e.target.value)}
             spellCheck="false"
           />
         </Section>
