@@ -40,6 +40,41 @@ const StyledToggleGroup = styled(ToggleGroup)`
   gap: 0.25rem;
 `;
 
+const ToggleButtonGroup = styled.div`
+  display: flex;
+  background-color: var(--color-gray-900);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-850);
+  padding: 0.25rem;
+  gap: 0.25rem;
+`;
+
+const ToggleOption = styled.button<{ $active?: boolean }>`
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: ${(props) => (props.$active ? "var(--color-fg)" : "transparent")};
+  color: ${(props) => (props.$active ? "var(--color-bg)" : "var(--color-gray-400)")};
+  border-radius: calc(var(--radius-md) - 0.125rem);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+  flex: 1;
+  outline: none;
+
+  &[aria-pressed='true'] {
+    background-color: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  &:hover {
+    background-color: var(--color-fg);
+    color: var(--color-bg);
+  }
+`;
+
 const ToggleButton = styled(Toggle)`
   padding: 0.5rem 1rem;
   border: none;
@@ -53,10 +88,21 @@ const ToggleButton = styled(Toggle)`
     background-color 0.2s,
     color 0.2s;
   flex: 1;
+  outline: none;
 
-  &[data-active="true"] {
-    background-color: var(--color-bg);
-    color: var(--color-fg);
+  &[data-state='on'] {
+    background-color: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  &[data-checked='true'] {
+    background-color: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  &[data-pressed='true'] {
+    background-color: var(--color-fg);
+    color: var(--color-bg);
   }
 
   &:hover {
@@ -166,6 +212,8 @@ export {
   Section,
   Label,
   StyledToggleGroup,
+  ToggleButtonGroup,
+  ToggleOption,
   ToggleButton,
   StyledSelectTrigger,
   StyledSelectPositioner,
