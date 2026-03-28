@@ -4,16 +4,16 @@ import { useState, useCallback } from "react";
 import Cookie from "js-cookie";
 import TypingTestSettings from "@/components/TypingTestSettings";
 import TypingTestInput from "@/components/TypingTestInput";
-import Keyboard, { KeyboardLayout } from "@/components/Keyboard";
+import Keyboard from "@/components/Keyboard";
 import { EXAMPLE_TWO } from "@/components/TypingTestInput/TypingTestInput.constants";
 import { STORAGE_KEY } from "@/components/Keyboard/Keyboard.constants";
 import { Wrapper } from "@/components/TypingTest/TypingTestClient.style";
+import type { TypingTestClientProps } from "@/components/TypingTest/TypingTestClient.types";
+import { KeyboardLayout } from "@/components/Keyboard/Keyboard.types";
 
 export default function TypingTestClient({
   initialLayout,
-}: {
-  initialLayout: KeyboardLayout;
-}) {
+}: TypingTestClientProps) {
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [keyCount, setKeyCount] = useState(0);
   const [layout, setLayout] = useState<KeyboardLayout>(initialLayout);

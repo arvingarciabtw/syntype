@@ -20,43 +20,19 @@ import {
 /*
   --- TYPES ---
 */
-
-type CharStatus = "untyped" | "correct" | "incorrect";
-
-interface CharData {
-  expected: string;
-  status: CharStatus;
-}
-
-interface Line {
-  indent: number;
-  chars: CharData[];
-}
-
-interface CursorPos {
-  line: number;
-  char: number;
-}
-
-interface TypingStats {
-  correct: number;
-  incorrect: number;
-  total: number;
-}
-
-interface TypingTestInputProps {
-  code: string;
-  onComplete?: (stats: TypingStats) => void;
-  onProgress?: (stats: TypingStats) => void;
-  onKeyPress?: (key: string) => void;
-  visibleLines?: number; /* how many lines to show at once, default: 6 */
-}
+import type {
+  CharData,
+  TypingLine,
+  CursorPos,
+  TypingStats,
+  TypingTestInputProps,
+} from "@/components/TypingTestInput/TypingTestInput.types";
 
 /*
   --- PARSER ---
 */
 
-function parseCode(code: string): Line[] {
+function parseCode(code: string): TypingLine[] {
   const rawLines = code.split("\n");
   return rawLines.map((raw, i) => {
     const indent = raw.match(/^(\s*)/)?.[1].length ?? 0;
@@ -77,7 +53,7 @@ function parseCode(code: string): Line[] {
   --- STATS HELPER ---
 */
 
-function computeStats(lines: Line[]): TypingStats {
+function computeStats(lines: TypingLine[]): TypingStats {
   let correct = 0,
     incorrect = 0,
     total = 0;
@@ -110,7 +86,7 @@ export default function TypingTestInput({
   onKeyPress,
   visibleLines = VISIBLE_LINES_DEFAULT,
 }: TypingTestInputProps) {
-  const [lines, setLines] = useState<Line[]>(() => parseCode(code));
+  const [lines, setLines] = useState<TypingLine[]>(() => parseCode(code));
   const [cursor, setCursor] = useState<CursorPos>({ line: 0, char: 0 });
   const [done, setDone] = useState(false);
   const [isFocused, setIsFocused] = useState(false);

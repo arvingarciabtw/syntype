@@ -5,24 +5,7 @@ import {
   Danger,
   Icon,
 } from "@/components/Button/Button.style";
-
-type BaseProps = {
-  children: React.ReactNode;
-  variant: string;
-};
-
-type ButtonProps = BaseProps & {
-  as?: never;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
-type AnchorProps = BaseProps & {
-  as: "a";
-} & React.AnchorHTMLAttributes<HTMLAnchorElement>;
-type CustomProps = BaseProps & { as: React.ElementType } & Record<
-    string,
-    unknown
-  >;
-
-type Props = ButtonProps | AnchorProps | CustomProps;
+import type { Props } from "@/components/Button/Button.types";
 
 function Button({ children, variant, as, ...delegated }: Props) {
   const props = { as, ...delegated };

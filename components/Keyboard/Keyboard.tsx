@@ -9,14 +9,7 @@ import {
   ShiftDisplay,
 } from "@/components/Keyboard/Keyboard.style";
 import { KEYBOARD_LAYOUTS } from "@/components/Keyboard/Keyboard.constants";
-
-export type KeyboardLayout = "qwerty" | "dvorak" | "colemak";
-
-interface KeyboardProps {
-  pressedKey: string | null;
-  keyCount: number;
-  layout?: KeyboardLayout;
-}
+import type { KeyboardProps } from "@/components/Keyboard/Keyboard.types";
 
 function normalizeKey(key: string): string {
   if (key.startsWith("Key") && key.length === 4) {

@@ -15,6 +15,7 @@ import {
   StyledSelectItem,
   StyledTextarea,
 } from "@/components/TypingTestSettings/TypingTestSettings.style";
+import type { TypingTestSettingsProps } from "@/components/TypingTestSettings/TypingTestSettings.types";
 
 const LANGUAGES = [
   "TypeScript",
@@ -34,10 +35,7 @@ const KEYBOARD_LAYOUTS = ["QWERTY", "DVORAK", "COLEMAK"];
 function TypingTestSettings({
   layout = "QWERTY",
   onLayoutChange,
-}: {
-  layout?: string;
-  onLayoutChange?: (layout: string) => void;
-}) {
+}: TypingTestSettingsProps) {
   const [time, setTime] = React.useState<string>("30");
   const [length, setLength] = React.useState<string>("moderate");
   const [language, setLanguage] = React.useState<string>("TypeScript");

@@ -5,8 +5,9 @@ import Cookie from "js-cookie";
 import Button from "@/components/Button";
 import { Sun, Moon } from "react-feather";
 import { LIGHT_COLORS, DARK_COLORS } from "@/lib/constants";
+import type { ThemeToggleProps } from "@/components/ThemeToggle/ThemeToggle.types";
 
-function ThemeToggle({ initialTheme }: { initialTheme: string }) {
+function ThemeToggle({ initialTheme }: ThemeToggleProps) {
   const [theme, setTheme] = React.useState(initialTheme);
 
   function handleClick() {

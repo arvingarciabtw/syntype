@@ -1,12 +1,11 @@
 import React from "react";
 import VisuallyHiddenWrapper from "@/components/VisuallyHidden/VisuallyHidden.style";
+import type { VisuallyHiddenProps } from "@/components/VisuallyHidden/VisuallyHidden.types";
 
 const VisuallyHidden = ({
   children,
   ...delegated
-}: {
-  children: React.ReactNode;
-}) => {
+}: VisuallyHiddenProps) => {
   const [forceShow, setForceShow] = React.useState(false);
 
   React.useEffect(() => {
