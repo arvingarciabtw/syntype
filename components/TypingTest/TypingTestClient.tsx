@@ -19,6 +19,7 @@ export default function TypingTestClient({
   const [keyCount, setKeyCount] = useState(0);
   const [layout, setLayout] = useState<KeyboardLayout>(initialLayout);
   const [time, setTime] = useState<Time>("30");
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [length, setLength] = useState<Length>("moderate");
   const [language, setLanguage] = useState<string>("TypeScript");
   const [aiPrompt, setAiPrompt] = useState<string>("");
@@ -54,6 +55,26 @@ export default function TypingTestClient({
   const layoutDisplay =
     layout === "qwerty" ? "QWERTY" : layout === "dvorak" ? "DVORAK" : "COLEMAK";
 
+  const handleTimeChange = (newTime: Time) => {
+    setTime(newTime);
+    setTimeLeft(null);
+  };
+
+  const handleLengthChange = (newLength: Length) => {
+    setLength(newLength);
+    setTimeLeft(null);
+  };
+
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage);
+    setTimeLeft(null);
+  };
+
+  const handleAiPromptChange = (newPrompt: string) => {
+    setAiPrompt(newPrompt);
+    setTimeLeft(null);
+  };
+
   return (
     <Wrapper>
       <TypingTestSettings
@@ -62,13 +83,19 @@ export default function TypingTestClient({
         language={language}
         aiPrompt={aiPrompt}
         layout={layoutDisplay}
-        onTimeChange={setTime}
-        onLengthChange={setLength}
-        onLanguageChange={setLanguage}
-        onAiPromptChange={setAiPrompt}
+        timeLeft={timeLeft}
+        onTimeChange={handleTimeChange}
+        onLengthChange={handleLengthChange}
+        onLanguageChange={handleLanguageChange}
+        onAiPromptChange={handleAiPromptChange}
         onLayoutChange={handleLayoutChange}
       />
-      <TypingTestInput code={code} onKeyPress={handleKeyPress} />
+      <TypingTestInput
+        code={code}
+        onKeyPress={handleKeyPress}
+        time={parseInt(time, 10)}
+        onTimeLeftChange={setTimeLeft}
+      />
       <Keyboard pressedKey={pressedKey} keyCount={keyCount} layout={layout} />
     </Wrapper>
   );

@@ -7,6 +7,7 @@ export interface TypingTestSettingsProps {
   language: string;
   aiPrompt: string;
   layout?: string;
+  timeLeft?: number | null;
   onTimeChange?: (time: Time) => void;
   onLengthChange?: (length: Length) => void;
   onLanguageChange?: (language: string) => void;

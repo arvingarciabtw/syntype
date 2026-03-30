@@ -38,6 +38,7 @@ function TypingTestSettings({
   language,
   aiPrompt,
   layout = "QWERTY",
+  timeLeft,
   onTimeChange,
   onLengthChange,
   onLanguageChange,
@@ -49,11 +50,21 @@ function TypingTestSettings({
     onLayoutChange?.(value);
   };
 
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const displayTime = timeLeft !== null && timeLeft !== undefined
+    ? timeLeft
+    : parseInt(time, 10);
+
   return (
     <Wrapper>
       <Column>
         <Section>
-          <Label id="time-label">Time</Label>
+          <Label id="time-label">Time {formatTime(displayTime)}</Label>
           <ToggleButtonGroup role="group" aria-labelledby="time-label">
             <ToggleOption $active={time === "15"} aria-pressed={time === "15"} onClick={() => onTimeChange?.("15" as Time)}>15</ToggleOption>
             <ToggleOption $active={time === "30"} aria-pressed={time === "30"} onClick={() => onTimeChange?.("30" as Time)}>30</ToggleOption>

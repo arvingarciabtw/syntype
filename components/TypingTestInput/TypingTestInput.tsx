@@ -84,21 +84,75 @@ export default function TypingTestInput({
   onComplete,
   onProgress,
   onKeyPress,
+  onTimeLeftChange,
   visibleLines = VISIBLE_LINES_DEFAULT,
+  time,
 }: TypingTestInputProps) {
   const [lines, setLines] = useState<TypingLine[]>(() => parseCode(code));
   const [cursor, setCursor] = useState<CursorPos>({ line: 0, char: 0 });
   const [done, setDone] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [timeLeft, setTimeLeft] = useState<number | undefined>(time);
+  const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timeLeftRef = useRef(time);
+  const linesRef = useRef(lines);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLines(parseCode(code));
+    linesRef.current = parseCode(code);
     setCursor({ line: 0, char: 0 });
     setDone(false);
-  }, [code]);
+    setTimeLeft(time);
+    timeLeftRef.current = time;
+    setHasStartedTyping(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, [code, time]);
+
+  useEffect(() => {
+    linesRef.current = lines;
+  }, [lines]);
+
+  useEffect(() => {
+    if (!hasStartedTyping || time === undefined || done) return;
+
+    if (timeLeftRef.current !== undefined && timeLeftRef.current > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev === null || prev === undefined) return prev;
+          const newTime = prev - 1;
+          timeLeftRef.current = newTime;
+          setTimeout(() => onTimeLeftChange?.(newTime), 0);
+          if (newTime <= 0) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            const linesCopy = linesRef.current;
+            setTimeout(() => {
+              setDone(true);
+              onComplete?.(computeStats(linesCopy));
+            }, 0);
+            return 0;
+          }
+          return newTime;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [hasStartedTyping, time, onTimeLeftChange, onComplete, done]);
 
   const focusInput = () => hiddenInputRef.current?.focus();
 
@@ -114,6 +168,11 @@ export default function TypingTestInput({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (done) return;
+
+      if (!hasStartedTyping && time !== undefined) {
+        setHasStartedTyping(true);
+        setTimeLeft(time);
+      }
 
       onKeyPress?.(e.code);
 
@@ -229,7 +288,7 @@ export default function TypingTestInput({
         return prevCursor;
       });
     },
-    [done, lines, onComplete, onProgress, onKeyPress],
+    [done, lines, onComplete, onProgress, onKeyPress, hasStartedTyping, time],
   );
 
   /* Scroll offset: keep cursor at CURSOR_ANCHOR_ROW  */

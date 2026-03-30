@@ -21,7 +21,7 @@ afterEach(() => {
 test("renders all sections", () => {
   render(<TypingTestSettings {...DEFAULT_PROPS} />);
 
-  expect(screen.getByRole("group", { name: "Time" })).toBeDefined();
+  expect(screen.getByRole("group", { name: /Time/ })).toBeDefined();
   expect(screen.getByRole("group", { name: "Length" })).toBeDefined();
   expect(screen.getByRole("combobox", { name: "Language" })).toBeDefined();
   expect(screen.getByRole("textbox", { name: "AI Prompt" })).toBeDefined();

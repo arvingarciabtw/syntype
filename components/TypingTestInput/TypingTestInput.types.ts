@@ -26,5 +26,7 @@ export interface TypingTestInputProps {
   onComplete?: (stats: TypingStats) => void;
   onProgress?: (stats: TypingStats) => void;
   onKeyPress?: (key: string) => void;
+  onTimeLeftChange?: (timeLeft: number) => void;
   visibleLines?: number;
+  time?: number;
 }
