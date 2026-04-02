@@ -206,6 +206,54 @@ const StyledTextarea = styled.textarea`
   }
 `;
 
+const TextareaWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const SubmitButton = styled.button<{ $loading?: boolean }>`
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  padding: 0.5rem;
+  background-color: ${(props) => (props.$loading ? "var(--color-gray-850)" : "var(--color-fg)")};
+  border: none;
+  border-radius: var(--radius-sm);
+  color: ${(props) => (props.$loading ? "var(--color-gray-500)" : "var(--color-bg)")};
+  cursor: ${(props) => (props.$loading ? "wait" : "pointer")};
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: ${(props) => (props.$loading ? "var(--color-gray-850)" : "var(--color-gray-800)")};
+  }
+
+  &:disabled {
+    cursor: wait;
+  }
+`;
+
+const Spinner = styled.span`
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 export {
   Wrapper,
   Column,
@@ -220,4 +268,7 @@ export {
   StyledSelectPopup,
   StyledSelectItem,
   StyledTextarea,
+  TextareaWrapper,
+  SubmitButton,
+  Spinner,
 };

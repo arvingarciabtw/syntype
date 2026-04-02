@@ -12,5 +12,7 @@ export interface TypingTestSettingsProps {
   onLengthChange?: (length: Length) => void;
   onLanguageChange?: (language: string) => void;
   onAiPromptChange?: (aiPrompt: string) => void;
+  onAiPromptSubmit?: () => void;
+  isGenerating?: boolean;
   onLayoutChange?: (layout: string) => void;
 }

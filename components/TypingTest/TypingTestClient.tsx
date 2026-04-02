@@ -23,13 +23,15 @@ export default function TypingTestClient({
   const [length, setLength] = useState<Length>("moderate");
   const [language, setLanguage] = useState<string>("TypeScript");
   const [aiPrompt, setAiPrompt] = useState<string>("");
+  const [generatedCode, setGeneratedCode] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const code = useMemo(() => {
-    if (aiPrompt.trim()) {
-      return aiPrompt;
+    if (generatedCode.trim()) {
+      return generatedCode;
     }
     return CODE_SNIPPETS[language]?.[length] || DEFAULT_CODE;
-  }, [aiPrompt, language, length]);
+  }, [generatedCode, language, length]);
 
   const handleKeyPress = useCallback((key: string) => {
     setPressedKey(key);
@@ -72,8 +74,33 @@ export default function TypingTestClient({
 
   const handleAiPromptChange = (newPrompt: string) => {
     setAiPrompt(newPrompt);
+    if (newPrompt !== aiPrompt) {
+      setGeneratedCode("");
+    }
     setTimeLeft(null);
   };
+
+  const handleAiPromptSubmit = useCallback(async () => {
+    if (!aiPrompt.trim() || isGenerating) return;
+
+    setIsGenerating(true);
+    try {
+      const response = await fetch("/api/generate-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: aiPrompt, language, length }),
+      });
+
+      const data = await response.json();
+      if (data.code) {
+        setGeneratedCode(data.code);
+      }
+    } catch (error) {
+      console.error("Failed to generate code:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [aiPrompt, isGenerating, language, length]);
 
   return (
     <Wrapper>
@@ -88,6 +115,8 @@ export default function TypingTestClient({
         onLengthChange={handleLengthChange}
         onLanguageChange={handleLanguageChange}
         onAiPromptChange={handleAiPromptChange}
+        onAiPromptSubmit={handleAiPromptSubmit}
+        isGenerating={isGenerating}
         onLayoutChange={handleLayoutChange}
       />
       <TypingTestInput

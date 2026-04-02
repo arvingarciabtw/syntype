@@ -14,6 +14,9 @@ import {
   StyledSelectPopup,
   StyledSelectItem,
   StyledTextarea,
+  TextareaWrapper,
+  SubmitButton,
+  Spinner,
 } from "@/components/TypingTestSettings/TypingTestSettings.style";
 import type { Time, Length, TypingTestSettingsProps } from "@/components/TypingTestSettings/TypingTestSettings.types";
 
@@ -43,6 +46,8 @@ function TypingTestSettings({
   onLengthChange,
   onLanguageChange,
   onAiPromptChange,
+  onAiPromptSubmit,
+  isGenerating,
   onLayoutChange,
 }: TypingTestSettingsProps) {
   const handleLayoutChange = (value: string | null) => {
@@ -154,13 +159,44 @@ function TypingTestSettings({
       <Column>
         <Section>
           <Label htmlFor="ai-prompt">AI Prompt</Label>
-          <StyledTextarea
-            id="ai-prompt"
-            placeholder="Generate a React useAuth hook with login, logout, and session persistence..."
-            value={aiPrompt}
-            onChange={(e) => onAiPromptChange?.(e.target.value)}
-            spellCheck="false"
-          />
+          <TextareaWrapper>
+            <StyledTextarea
+              id="ai-prompt"
+              placeholder="Generate a React useAuth hook with login, logout, and session persistence..."
+              value={aiPrompt}
+              onChange={(e) => onAiPromptChange?.(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  onAiPromptSubmit?.();
+                }
+              }}
+              spellCheck="false"
+            />
+            <SubmitButton
+              type="button"
+              onClick={onAiPromptSubmit}
+              disabled={isGenerating}
+              $loading={isGenerating}
+              aria-label={isGenerating ? "Generating code..." : "Generate code"}
+            >
+              {isGenerating ? <Spinner /> : (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              )}
+            </SubmitButton>
+          </TextareaWrapper>
         </Section>
       </Column>
     </Wrapper>
