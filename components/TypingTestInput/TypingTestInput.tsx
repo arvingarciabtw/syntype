@@ -53,7 +53,7 @@ function parseCode(code: string): TypingLine[] {
   --- STATS HELPER ---
 */
 
-function computeStats(lines: TypingLine[]): TypingStats {
+function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: number): TypingStats {
   let correct = 0,
     incorrect = 0,
     total = 0;
@@ -68,7 +68,7 @@ function computeStats(lines: TypingLine[]): TypingStats {
       }
     }
   }
-  return { correct, incorrect, total };
+  return { correct, incorrect, total, timeConfig, elapsedTime };
 }
 
 /*
@@ -87,6 +87,7 @@ export default function TypingTestInput({
   onTimeLeftChange,
   visibleLines = VISIBLE_LINES_DEFAULT,
   time,
+  resetKey,
 }: TypingTestInputProps) {
   const [lines, setLines] = useState<TypingLine[]>(() => parseCode(code));
   const [cursor, setCursor] = useState<CursorPos>({ line: 0, char: 0 });
@@ -121,6 +122,24 @@ export default function TypingTestInput({
   }, [lines]);
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
+    if (resetKey === undefined) return;
+    const parsed = parseCode(code);
+    setLines(parsed);
+    linesRef.current = parsed;
+    setCursor({ line: 0, char: 0 });
+    setDone(false);
+    setTimeLeft(time);
+    timeLeftRef.current = time;
+    setHasStartedTyping(false);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [resetKey, code, time]);
+
+  useEffect(() => {
     if (!hasStartedTyping || time === undefined || done) return;
 
     if (timeLeftRef.current !== undefined && timeLeftRef.current > 0) {
@@ -136,9 +155,10 @@ export default function TypingTestInput({
               timerRef.current = null;
             }
             const linesCopy = linesRef.current;
+            const elapsedTime = time - timeLeftRef.current;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(linesCopy));
+              onComplete?.(computeStats(linesCopy, time, elapsedTime));
             }, 0);
             return 0;
           }
@@ -225,9 +245,10 @@ export default function TypingTestInput({
 
           const nextLine = li + 1;
           if (nextLine >= lines.length) {
+            const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(lines));
+              onComplete?.(computeStats(lines, time ?? 0, elapsedTime));
             }, 0);
             return prevCursor;
           }
@@ -251,9 +272,10 @@ export default function TypingTestInput({
             });
             const nextLine = li + 1;
             if (nextLine >= lines.length) {
+              const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
               setTimeout(() => {
                 setDone(true);
-                onComplete?.(computeStats(lines));
+                onComplete?.(computeStats(lines, time ?? 0, elapsedTime));
               }, 0);
               return prevCursor;
             }
@@ -268,16 +290,16 @@ export default function TypingTestInput({
               chars: l.chars.map((c) => ({ ...c })),
             }));
             next[li].chars[ci].status = isCorrect ? "correct" : "incorrect";
-            onProgress?.(computeStats(next));
+            onProgress?.(computeStats(next, time ?? 0, 0));
             return next;
           });
 
           const nextChar = ci + 1;
           if (nextChar >= lines[li].chars.length && li === lines.length - 1) {
-            // last char of last line → done
+            const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(lines));
+              onComplete?.(computeStats(lines, time ?? 0, elapsedTime));
             }, 0);
             return prevCursor;
           }

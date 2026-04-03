@@ -90,7 +90,7 @@ describe("TypingTestInput typing behavior", () => {
     const input = screen.getByLabelText("Typing input");
     
     fireEvent.keyDown(input, { key: "a" });
-    expect(onProgress).toHaveBeenCalledWith({ correct: 1, incorrect: 0, total: 1 });
+    expect(onProgress).toHaveBeenCalledWith({ correct: 1, incorrect: 0, total: 1, timeConfig: 0, elapsedTime: 0 });
   });
 
   test("cursor advances to next character after typing", () => {

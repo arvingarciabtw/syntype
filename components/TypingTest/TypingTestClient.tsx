@@ -5,12 +5,15 @@ import Cookie from "js-cookie";
 import TypingTestSettings from "@/components/TypingTestSettings";
 import TypingTestInput from "@/components/TypingTestInput";
 import Keyboard from "@/components/Keyboard";
+import TypingTestResults from "@/components/TypingTest/TypingTestResults/TypingTestResults";
 import { CODE_SNIPPETS, DEFAULT_CODE } from "@/lib/codeSnippets";
 import { STORAGE_KEY } from "@/components/Keyboard/Keyboard.constants";
 import { Wrapper } from "@/components/TypingTest/TypingTestClient.style";
 import type { TypingTestClientProps } from "@/components/TypingTest/TypingTestClient.types";
 import { KeyboardLayout } from "@/components/Keyboard/Keyboard.types";
 import type { Time, Length } from "@/components/TypingTestSettings/TypingTestSettings.types";
+import type { TypingStats } from "@/components/TypingTestInput/TypingTestInput.types";
+import type { TestResults } from "@/components/TypingTest/TypingTestResults/TypingTestResults.types";
 
 export default function TypingTestClient({
   initialLayout,
@@ -25,6 +28,9 @@ export default function TypingTestClient({
   const [aiPrompt, setAiPrompt] = useState<string>("");
   const [generatedCode, setGeneratedCode] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [testResults, setTestResults] = useState<TestResults | null>(null);
+  const [resetKey, setResetKey] = useState<string | number>(0);
 
   const code = useMemo(() => {
     if (generatedCode.trim()) {
@@ -102,6 +108,38 @@ export default function TypingTestClient({
     }
   }, [aiPrompt, isGenerating, language, length]);
 
+  const handleComplete = useCallback((stats: TypingStats) => {
+    const elapsedMinutes = stats.elapsedTime / 60;
+    const wpm = elapsedMinutes > 0 ? Math.round((stats.correct / 5) / elapsedMinutes) : 0;
+    const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    
+    setTestResults({
+      wpm,
+      accuracy,
+      correct: stats.correct,
+      incorrect: stats.incorrect,
+      total: stats.total,
+      time: stats.timeConfig,
+    });
+    setIsCompleted(true);
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setIsCompleted(false);
+    setTestResults(null);
+    setResetKey((k) => (typeof k === "number" ? k + 1 : Date.now()));
+    setKeyCount(0);
+    setTimeLeft(null);
+  }, []);
+
+  if (isCompleted && testResults) {
+    return (
+      <Wrapper>
+        <TypingTestResults results={testResults} onReset={handleReset} />
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper>
       <TypingTestSettings
@@ -122,8 +160,10 @@ export default function TypingTestClient({
       <TypingTestInput
         code={code}
         onKeyPress={handleKeyPress}
+        onComplete={handleComplete}
         time={parseInt(time, 10)}
         onTimeLeftChange={setTimeLeft}
+        resetKey={resetKey}
       />
       <Keyboard pressedKey={pressedKey} keyCount={keyCount} layout={layout} />
     </Wrapper>

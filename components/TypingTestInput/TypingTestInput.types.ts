@@ -19,6 +19,8 @@ export interface TypingStats {
   correct: number;
   incorrect: number;
   total: number;
+  timeConfig: number;
+  elapsedTime: number;
 }
 
 export interface TypingTestInputProps {
@@ -29,4 +31,5 @@ export interface TypingTestInputProps {
   onTimeLeftChange?: (timeLeft: number) => void;
   visibleLines?: number;
   time?: number;
+  resetKey?: string | number;
 }
