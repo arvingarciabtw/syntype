@@ -13,6 +13,7 @@ import {
   CharacterTotal,
   ResetButton,
 } from "./TypingTestResults.style";
+import Graph from "@/components/Graph/Graph";
 import type { TypingTestResultsProps } from "./TypingTestResults.types";
 
 export default function TypingTestResults({
@@ -36,6 +37,7 @@ export default function TypingTestResults({
           <StatLabel>Time</StatLabel>
         </StatCard>
       </StatsGrid>
+      <Graph data={results.wpmHistory} />
       <CharacterBreakdown>
         <CharacterCorrect>{results.correct}</CharacterCorrect>
         {"/"}

@@ -53,7 +53,7 @@ function parseCode(code: string): TypingLine[] {
   --- STATS HELPER ---
 */
 
-function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: number): TypingStats {
+function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: number, wpmHistory: number[]): TypingStats {
   let correct = 0,
     incorrect = 0,
     total = 0;
@@ -68,7 +68,7 @@ function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: numb
       }
     }
   }
-  return { correct, incorrect, total, timeConfig, elapsedTime };
+  return { correct, incorrect, total, timeConfig, elapsedTime, wpmHistory };
 }
 
 /*
@@ -99,8 +99,11 @@ export default function TypingTestInput({
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const wpmIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeLeftRef = useRef(time);
   const linesRef = useRef(lines);
+  const wpmHistoryRef = useRef<number[]>([]);
+  const elapsedTimeRef = useRef(0);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -109,11 +112,17 @@ export default function TypingTestInput({
     setCursor({ line: 0, char: 0 });
     setDone(false);
     setTimeLeft(time);
+    wpmHistoryRef.current = [];
     timeLeftRef.current = time;
+    elapsedTimeRef.current = 0;
     setHasStartedTyping(false);
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+    if (wpmIntervalRef.current) {
+      clearInterval(wpmIntervalRef.current);
+      wpmIntervalRef.current = null;
     }
   }, [code, time]);
 
@@ -130,11 +139,17 @@ export default function TypingTestInput({
     setCursor({ line: 0, char: 0 });
     setDone(false);
     setTimeLeft(time);
+    wpmHistoryRef.current = [];
     timeLeftRef.current = time;
+    elapsedTimeRef.current = 0;
     setHasStartedTyping(false);
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+    if (wpmIntervalRef.current) {
+      clearInterval(wpmIntervalRef.current);
+      wpmIntervalRef.current = null;
     }
     /* eslint-enable react-hooks/set-state-in-effect */
   }, [resetKey, code, time]);
@@ -154,22 +169,40 @@ export default function TypingTestInput({
               clearInterval(timerRef.current);
               timerRef.current = null;
             }
+            if (wpmIntervalRef.current) {
+              clearInterval(wpmIntervalRef.current);
+              wpmIntervalRef.current = null;
+            }
             const linesCopy = linesRef.current;
             const elapsedTime = time - timeLeftRef.current;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(linesCopy, time, elapsedTime));
+              onComplete?.(computeStats(linesCopy, time, elapsedTime, wpmHistoryRef.current));
             }, 0);
             return 0;
           }
           return newTime;
         });
       }, 1000);
+
+      wpmIntervalRef.current = setInterval(() => {
+        const elapsed = time - (timeLeftRef.current ?? 0);
+        elapsedTimeRef.current = elapsed;
+        if (elapsed > 0) {
+          const correct = linesRef.current.flatMap(l => l.chars).filter(c => c.status === "correct").length;
+          const wpm = Math.round((correct / 5) / (elapsed / 60));
+          wpmHistoryRef.current = [...wpmHistoryRef.current, wpm];
+        }
+      }, 1000);
     }
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
+      }
+      if (wpmIntervalRef.current) {
+        clearInterval(wpmIntervalRef.current);
+        wpmIntervalRef.current = null;
       }
     };
   }, [hasStartedTyping, time, onTimeLeftChange, onComplete, done]);
@@ -248,7 +281,7 @@ export default function TypingTestInput({
             const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(lines, time ?? 0, elapsedTime));
+              onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current));
             }, 0);
             return prevCursor;
           }
@@ -275,7 +308,7 @@ export default function TypingTestInput({
               const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
               setTimeout(() => {
                 setDone(true);
-                onComplete?.(computeStats(lines, time ?? 0, elapsedTime));
+                onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current));
               }, 0);
               return prevCursor;
             }
@@ -290,7 +323,7 @@ export default function TypingTestInput({
               chars: l.chars.map((c) => ({ ...c })),
             }));
             next[li].chars[ci].status = isCorrect ? "correct" : "incorrect";
-            onProgress?.(computeStats(next, time ?? 0, 0));
+            onProgress?.(computeStats(next, time ?? 0, 0, wpmHistoryRef.current));
             return next;
           });
 
@@ -299,7 +332,7 @@ export default function TypingTestInput({
             const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(lines, time ?? 0, elapsedTime));
+              onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current));
             }, 0);
             return prevCursor;
           }

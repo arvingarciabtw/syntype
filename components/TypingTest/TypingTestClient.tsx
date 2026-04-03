@@ -120,6 +120,7 @@ export default function TypingTestClient({
       incorrect: stats.incorrect,
       total: stats.total,
       time: stats.timeConfig,
+      wpmHistory: stats.wpmHistory,
     });
     setIsCompleted(true);
   }, []);

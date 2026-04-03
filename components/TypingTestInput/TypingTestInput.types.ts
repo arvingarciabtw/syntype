@@ -21,6 +21,7 @@ export interface TypingStats {
   total: number;
   timeConfig: number;
   elapsedTime: number;
+  wpmHistory: number[];
 }
 
 export interface TypingTestInputProps {

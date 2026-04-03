@@ -5,6 +5,7 @@ export interface TestResults {
   incorrect: number;
   total: number;
   time: number;
+  wpmHistory: number[];
 }
 
 export interface TypingTestResultsProps {
