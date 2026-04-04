@@ -121,6 +121,8 @@ export default function TypingTestClient({
       total: stats.total,
       time: stats.timeConfig,
       wpmHistory: stats.wpmHistory,
+      typingHistory: stats.typingHistory,
+      code: stats.code,
     });
     setIsCompleted(true);
   }, []);

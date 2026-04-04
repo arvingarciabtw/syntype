@@ -6,6 +6,14 @@ export interface TestResults {
   total: number;
   time: number;
   wpmHistory: number[];
+  typingHistory: TypingHistoryEntry[];
+  code: string;
+}
+
+export interface TypingHistoryEntry {
+  charIndex: number;
+  status: "untyped" | "correct" | "incorrect";
+  timestamp: number;
 }
 
 export interface TypingTestResultsProps {

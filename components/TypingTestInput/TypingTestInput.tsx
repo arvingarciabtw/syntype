@@ -26,6 +26,7 @@ import type {
   CursorPos,
   TypingStats,
   TypingTestInputProps,
+  TypingHistoryEntry,
 } from "@/components/TypingTestInput/TypingTestInput.types";
 
 /*
@@ -53,7 +54,7 @@ function parseCode(code: string): TypingLine[] {
   --- STATS HELPER ---
 */
 
-function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: number, wpmHistory: number[]): TypingStats {
+function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: number, wpmHistory: number[], typingHistory: TypingHistoryEntry[], code: string): TypingStats {
   let correct = 0,
     incorrect = 0,
     total = 0;
@@ -68,7 +69,7 @@ function computeStats(lines: TypingLine[], timeConfig: number, elapsedTime: numb
       }
     }
   }
-  return { correct, incorrect, total, timeConfig, elapsedTime, wpmHistory };
+  return { correct, incorrect, total, timeConfig, elapsedTime, wpmHistory, typingHistory, code };
 }
 
 /*
@@ -103,7 +104,9 @@ export default function TypingTestInput({
   const timeLeftRef = useRef(time);
   const linesRef = useRef(lines);
   const wpmHistoryRef = useRef<number[]>([]);
+  const typingHistoryRef = useRef<TypingHistoryEntry[]>([]);
   const elapsedTimeRef = useRef(0);
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -113,8 +116,10 @@ export default function TypingTestInput({
     setDone(false);
     setTimeLeft(time);
     wpmHistoryRef.current = [];
+    typingHistoryRef.current = [];
     timeLeftRef.current = time;
     elapsedTimeRef.current = 0;
+    startTimeRef.current = null;
     setHasStartedTyping(false);
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -140,8 +145,10 @@ export default function TypingTestInput({
     setDone(false);
     setTimeLeft(time);
     wpmHistoryRef.current = [];
+    typingHistoryRef.current = [];
     timeLeftRef.current = time;
     elapsedTimeRef.current = 0;
+    startTimeRef.current = null;
     setHasStartedTyping(false);
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -177,7 +184,7 @@ export default function TypingTestInput({
             const elapsedTime = time - timeLeftRef.current;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(linesCopy, time, elapsedTime, wpmHistoryRef.current));
+              onComplete?.(computeStats(linesCopy, time, elapsedTime, wpmHistoryRef.current, typingHistoryRef.current, code));
             }, 0);
             return 0;
           }
@@ -225,6 +232,7 @@ export default function TypingTestInput({
       if (!hasStartedTyping && time !== undefined) {
         setHasStartedTyping(true);
         setTimeLeft(time);
+        startTimeRef.current = Date.now();
       }
 
       onKeyPress?.(e.code);
@@ -273,6 +281,14 @@ export default function TypingTestInput({
               chars: l.chars.map((c) => ({ ...c })),
             }));
             next[li].chars[ci].status = "correct";
+            
+            const charIndex = lines.slice(0, li).reduce((acc, line) => acc + line.chars.length, 0) + ci;
+            typingHistoryRef.current = [...typingHistoryRef.current, {
+              charIndex,
+              status: "correct",
+              timestamp: startTimeRef.current ? Date.now() - startTimeRef.current : 0,
+            }];
+            
             return next;
           });
 
@@ -281,7 +297,7 @@ export default function TypingTestInput({
             const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current));
+              onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current, typingHistoryRef.current, code));
             }, 0);
             return prevCursor;
           }
@@ -301,6 +317,14 @@ export default function TypingTestInput({
                 chars: l.chars.map((c) => ({ ...c })),
               }));
               next[li].chars[ci].status = "incorrect";
+              
+              const charIndex = lines.slice(0, li).reduce((acc, line) => acc + line.chars.length, 0) + ci;
+              typingHistoryRef.current = [...typingHistoryRef.current, {
+                charIndex,
+                status: "incorrect",
+                timestamp: startTimeRef.current ? Date.now() - startTimeRef.current : 0,
+              }];
+              
               return next;
             });
             const nextLine = li + 1;
@@ -308,7 +332,7 @@ export default function TypingTestInput({
               const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
               setTimeout(() => {
                 setDone(true);
-                onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current));
+                onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current, typingHistoryRef.current, code));
               }, 0);
               return prevCursor;
             }
@@ -323,7 +347,15 @@ export default function TypingTestInput({
               chars: l.chars.map((c) => ({ ...c })),
             }));
             next[li].chars[ci].status = isCorrect ? "correct" : "incorrect";
-            onProgress?.(computeStats(next, time ?? 0, 0, wpmHistoryRef.current));
+            
+            const charIndex = lines.slice(0, li).reduce((acc, line) => acc + line.chars.length, 0) + ci;
+            typingHistoryRef.current = [...typingHistoryRef.current, {
+              charIndex,
+              status: isCorrect ? "correct" : "incorrect",
+              timestamp: startTimeRef.current ? Date.now() - startTimeRef.current : 0,
+            }];
+            
+            onProgress?.(computeStats(next, time ?? 0, 0, wpmHistoryRef.current, typingHistoryRef.current, code));
             return next;
           });
 
@@ -332,7 +364,7 @@ export default function TypingTestInput({
             const elapsedTime = time !== undefined ? time - (timeLeftRef.current ?? 0) : 0;
             setTimeout(() => {
               setDone(true);
-              onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current));
+              onComplete?.(computeStats(lines, time ?? 0, elapsedTime, wpmHistoryRef.current, typingHistoryRef.current, code));
             }, 0);
             return prevCursor;
           }

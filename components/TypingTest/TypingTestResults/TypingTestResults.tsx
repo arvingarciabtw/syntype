@@ -11,9 +11,9 @@ import {
   CharacterCorrect,
   CharacterIncorrect,
   CharacterTotal,
-  ResetButton,
 } from "./TypingTestResults.style";
 import Graph from "@/components/Graph/Graph";
+import TypingTestReplay from "./TypingTestReplay";
 import type { TypingTestResultsProps } from "./TypingTestResults.types";
 
 export default function TypingTestResults({
@@ -45,7 +45,11 @@ export default function TypingTestResults({
         {"/"}
         <CharacterTotal>{results.total}</CharacterTotal>
       </CharacterBreakdown>
-      <ResetButton onClick={onReset}>Try Again</ResetButton>
+      <TypingTestReplay
+        code={results.code}
+        typingHistory={results.typingHistory}
+        onReset={onReset}
+      />
     </Container>
   );
 }

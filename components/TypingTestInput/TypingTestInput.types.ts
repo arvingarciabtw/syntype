@@ -15,6 +15,12 @@ export interface CursorPos {
   char: number;
 }
 
+export interface TypingHistoryEntry {
+  charIndex: number;
+  status: CharStatus;
+  timestamp: number;
+}
+
 export interface TypingStats {
   correct: number;
   incorrect: number;
@@ -22,6 +28,8 @@ export interface TypingStats {
   timeConfig: number;
   elapsedTime: number;
   wpmHistory: number[];
+  typingHistory: TypingHistoryEntry[];
+  code: string;
 }
 
 export interface TypingTestInputProps {
