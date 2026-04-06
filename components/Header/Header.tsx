@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import Menu from "@/components/Menu";
+import { AuthSection } from "./AuthSection";
 import { getTheme } from "@/lib/helpers/theme";
 import {
   HeaderWrapper,
@@ -40,14 +41,12 @@ async function Header() {
             <NavigationItem>
               <Link href="/challenge">Challenge</Link>
             </NavigationItem>
-            <NavigationItem>
-              <Link href="/sign-in">Sign in</Link>
-            </NavigationItem>
           </NavigationList>
           <Buttons>
             <NavigationItem>
               <ThemeToggle initialTheme={theme} />
             </NavigationItem>
+            <AuthSection />
             <NavigationItem>
               <Menu />
             </NavigationItem>
